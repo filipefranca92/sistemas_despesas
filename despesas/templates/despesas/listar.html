@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu Financeiro</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f7fb; color: #33475b; padding: 20px; display: flex; justify-content: center; margin: 0; }
+        .container { background-color: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); width: 100%; max-width: 700px; }
+        .dashboard-card { background: linear-gradient(135deg, #8faadc 0%, #6b8cce 100%); color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .filter-form select { padding: 8px; border-radius: 8px; border: none; outline: none; cursor: pointer; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eef2f5; }
+        .btn-action { text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+        .btn-edit { background-color: #eef2f5; color: #5b9bd5; }
+        .btn-del { background-color: #fde8e8; color: #e74c3c; }
+        .paginacao { margin-top: 20px; text-align: center; }
+        .btn-page { text-decoration: none; color: #8faadc; padding: 5px 10px; border: 1px solid #8faadc; border-radius: 5px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1 style="color: #5b9bd5; margin: 0;">Histórico</h1>
+            <a href="{% url 'home' %}" style="text-decoration: none; color: #8faadc; font-weight: bold;">← Home</a>
+        </div>
+
+        <div class="dashboard-card">
+            <div>
+                <small>Total Gasto (Filtro)</small>
+                <h2 style="margin: 5px 0 0 0;">R$ {{ total_mes|floatformat:2 }}</h2>
+            </div>
+            <form method="GET" class="filter-form">
+                <select name="mes" onchange="this.form.submit()">
+                    <option value="1" {% if mes_selecionado == 1 %}selected{% endif %}>Jan</option>
+                    <option value="2" {% if mes_selecionado == 2 %}selected{% endif %}>Fev</option>
+                    <option value="3" {% if mes_selecionado == 3 %}selected{% endif %}>Mar</option>
+                    <option value="4" {% if mes_selecionado == 4 %}selected{% endif %}>Abr</option>
+                    <option value="5" {% if mes_selecionado == 5 %}selected{% endif %}>Mai</option>
+                    <option value="6" {% if mes_selecionado == 6 %}selected{% endif %}>Jun</option>
+                    <option value="7" {% if mes_selecionado == 7 %}selected{% endif %}>Jul</option>
+                    <option value="8" {% if mes_selecionado == 8 %}selected{% endif %}>Ago</option>
+                    <option value="9" {% if mes_selecionado == 9 %}selected{% endif %}>Set</option>
+                    <option value="10" {% if mes_selecionado == 10 %}selected{% endif %}>Out</option>
+                    <option value="11" {% if mes_selecionado == 11 %}selected{% endif %}>Nov</option>
+                    <option value="12" {% if mes_selecionado == 12 %}selected{% endif %}>Dez</option>
+                </select>
+            </form>
+        </div>
+
+        {% for despesa in despesas %}
+            <div class="item">
+                <div>
+                    <strong style="color: #5b9bd5;">{{ despesa.get_categoria_display }}</strong>
+                    <div style="font-size: 18px; font-weight: bold; margin: 5px 0;">R$ {{ despesa.valor|floatformat:2 }}</div>
+                    <small style="color: #7f8c8d;">{{ despesa.descricao }} | {{ despesa.data }}</small>
+                </div>
+                <div>
+                    <a href="{% url 'editar' despesa.id %}" class="btn-action btn-edit">Editar</a>
+                    <a href="{% url 'excluir' despesa.id %}" class="btn-action btn-del">Excluir</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align: center; color: #7f8c8d;">Nenhuma conta este mês.</p>
+        {% endfor %}
+
+        <div class="paginacao">
+            {% if despesas.has_previous %}
+                <a href="?mes={{ mes_selecionado }}&page={{ despesas.previous_page_number }}" class="btn-page">Anterior</a>
+            {% endif %}
+            <span style="font-size: 13px; margin: 0 10px;">{{ despesas.number }} / {{ despesas.paginator.num_pages }}</span>
+            {% if despesas.has_next %}
+                <a href="?mes={{ mes_selecionado }}&page={{ despesas.next_page_number }}" class="btn-page">Próxima</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

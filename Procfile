@@ -1,0 +1,1 @@
+web: gunicorn projeto_despesas.wsgi --log-file -
