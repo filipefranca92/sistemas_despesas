@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-(z^%l1uqtjkr8x
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 # Permite conexões locais e do subdomínio do Heroku
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
