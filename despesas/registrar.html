@@ -2,29 +2,123 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Conta - Sistema de Despesas</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f7fb; color: #33475b; padding: 40px 20px; display: flex; justify-content: center; align-items: center; min-height: 80vh; margin: 0; }
-        .container { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); width: 100%; max-width: 450px; }
-        h1 { color: #5b9bd5; margin-top: 0; margin-bottom: 20px; text-align: center; font-size: 26px; }
-        p { font-size: 14px; margin-bottom: 15px; }
-        /* Estiliza os campos gerados automaticamente pelo formulário do Django */
-        input { width: 100%; padding: 12px; border: 1px solid #d6e4f0; border-radius: 8px; box-sizing: border-box; background-color: #f8fbff; outline: none; font-size: 14px; margin-bottom: 10px; }
-        input:focus { border-color: #8faadc; }
-        .helptext { display: block; font-size: 11px; color: #7f8c8d; margin-bottom: 15px; line-height: 1.3; }
-        .btn-submit { background-color: #8faadc; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; margin-top: 15px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        .btn-submit:hover { background-color: #7a99cc; }
-        .footer-links { text-align: center; margin-top: 20px; font-size: 14px; }
-        .footer-links a { color: #5b9bd5; text-decoration: none; font-weight: bold; }
-        .errorlist { color: #ff6b6b; padding-left: 20px; font-size: 13px; margin-bottom: 10px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7fb;
+            color: #33475b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .register-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #5b9bd5;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+            color: #4a607a;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d6e4f0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #f8fbff;
+            outline: none;
+            font-size: 14px;
+            color: #33475b;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            border-color: #8faadc;
+            box-shadow: 0 0 0 3px rgba(143, 170, 220, 0.2);
+        }
+        .helptext {
+            display: block;
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .btn-submit {
+            background-color: #8faadc;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #7a99cc;
+        }
+        .errorlist {
+            color: #ff6b6b;
+            padding-left: 20px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .footer-links a {
+            color: #5b9bd5;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover {
+            color: #4a82b8;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="register-container">
         <h1>Criar Nova Conta</h1>
+        
         <form method="POST">
             {% csrf_token %}
             
+            {% if form.errors %}
+                <p style="color: #ff6b6b; font-weight: bold; text-align: center; font-size: 14px;">
+                    Por favor, corrija os erros abaixo.
+                </p>
+            {% endif %}
+
             {{ form.as_p }}
             
             <button type="submit" class="btn-submit">Confirmar Cadastro</button>

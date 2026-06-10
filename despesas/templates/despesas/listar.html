@@ -1,73 +1,284 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Meu Financeiro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Histórico - Sistema de Despesas</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f7fb; color: #33475b; padding: 20px; display: flex; justify-content: center; margin: 0; }
-        .container { background-color: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); width: 100%; max-width: 700px; }
-        .dashboard-card { background: linear-gradient(135deg, #8faadc 0%, #6b8cce 100%); color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .filter-form select { padding: 8px; border-radius: 8px; border: none; outline: none; cursor: pointer; }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eef2f5; }
-        .btn-action { text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        .btn-edit { background-color: #eef2f5; color: #5b9bd5; }
-        .btn-del { background-color: #fde8e8; color: #e74c3c; }
-        .paginacao { margin-top: 20px; text-align: center; }
-        .btn-page { text-decoration: none; color: #8faadc; padding: 5px 10px; border: 1px solid #8faadc; border-radius: 5px; font-size: 12px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7fb;
+            color: #33475b;
+            margin: 0;
+            padding: 0;
+        }
+        /* Barra de Navegação */
+        nav {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #33475b;
+            font-weight: bold;
+            font-size: 15px;
+            margin-right: 20px;
+            transition: color 0.2s;
+        }
+        nav a:hover {
+            color: #5b9bd5;
+        }
+        .nav-logo {
+            color: #5b9bd5;
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 0;
+        }
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            font-family: inherit;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        .btn-logout:hover {
+            color: #e05252;
+        }
+        
+        /* Conteúdo Principal */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        h1 {
+            color: #5b9bd5;
+            margin: 0;
+            font-size: 26px;
+        }
+        .btn-add {
+            background-color: #8faadc;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .btn-add:hover {
+            background-color: #7a99cc;
+        }
+        
+        /* Filtros e Total */
+        .filtros-form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px;
+            background-color: #f8fbff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2ebf5;
+        }
+        .filtros-form label {
+            font-weight: bold;
+            color: #4a607a;
+            font-size: 14px;
+        }
+        .filtros-form input {
+            padding: 8px 12px;
+            border: 1px solid #d6e4f0;
+            border-radius: 6px;
+            outline: none;
+            color: #33475b;
+        }
+        .btn-filtrar {
+            background-color: #5b9bd5;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-filtrar:hover {
+            background-color: #4a82b8;
+        }
+        .total-section {
+            background-color: #ffffff;
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            color: #33475b;
+            margin-bottom: 20px;
+        }
+        .total-value {
+            color: #ff6b6b;
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        /* Tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        th, td {
+            padding: 14px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2ebf5;
+        }
+        th {
+            background-color: #f8fbff;
+            color: #4a607a;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        tr:hover {
+            background-color: #f0f7fb;
+        }
+        .action-links a {
+            color: #5b9bd5;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 14px;
+        }
+        .action-links a.delete {
+            color: #ff6b6b;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Paginação */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 14px;
+            background-color: #f8fbff;
+            border: 1px solid #d6e4f0;
+            border-radius: 6px;
+            color: #33475b;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .pagination .current {
+            background-color: #8faadc;
+            color: white;
+            border-color: #8faadc;
+        }
+        .pagination a:hover {
+            background-color: #e2ebf5;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h1 style="color: #5b9bd5; margin: 0;">Histórico</h1>
-            <a href="{% url 'home' %}" style="text-decoration: none; color: #8faadc; font-weight: bold;">← Home</a>
+    <nav>
+        <div>
+            <a href="{% url 'home' %}" class="nav-logo">Sistema de Despesas</a>
+            <a href="{% url 'listar' %}" style="margin-left: 25px; color: #5b9bd5;">Meu Histórico</a>
         </div>
-
-        <div class="dashboard-card">
-            <div>
-                <small>Total Gasto (Filtro)</small>
-                <h2 style="margin: 5px 0 0 0;">R$ {{ total_mes|floatformat:2 }}</h2>
-            </div>
-            <form method="GET" class="filter-form">
-                <select name="mes" onchange="this.form.submit()">
-                    <option value="1" {% if mes_selecionado == 1 %}selected{% endif %}>Jan</option>
-                    <option value="2" {% if mes_selecionado == 2 %}selected{% endif %}>Fev</option>
-                    <option value="3" {% if mes_selecionado == 3 %}selected{% endif %}>Mar</option>
-                    <option value="4" {% if mes_selecionado == 4 %}selected{% endif %}>Abr</option>
-                    <option value="5" {% if mes_selecionado == 5 %}selected{% endif %}>Mai</option>
-                    <option value="6" {% if mes_selecionado == 6 %}selected{% endif %}>Jun</option>
-                    <option value="7" {% if mes_selecionado == 7 %}selected{% endif %}>Jul</option>
-                    <option value="8" {% if mes_selecionado == 8 %}selected{% endif %}>Ago</option>
-                    <option value="9" {% if mes_selecionado == 9 %}selected{% endif %}>Set</option>
-                    <option value="10" {% if mes_selecionado == 10 %}selected{% endif %}>Out</option>
-                    <option value="11" {% if mes_selecionado == 11 %}selected{% endif %}>Nov</option>
-                    <option value="12" {% if mes_selecionado == 12 %}selected{% endif %}>Dez</option>
-                </select>
+        <div>
+            <span style="margin-right: 20px; color: #7f8c8d; font-size: 15px;">Olá, <strong>{{ user.username }}</strong>!</span>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">Sair</button>
             </form>
         </div>
+    </nav>
 
-        {% for despesa in despesas %}
-            <div class="item">
-                <div>
-                    <strong style="color: #5b9bd5;">{{ despesa.get_categoria_display }}</strong>
-                    <div style="font-size: 18px; font-weight: bold; margin: 5px 0;">R$ {{ despesa.valor|floatformat:2 }}</div>
-                    <small style="color: #7f8c8d;">{{ despesa.descricao }} | {{ despesa.data }}</small>
-                </div>
-                <div>
-                    <a href="{% url 'editar' despesa.id %}" class="btn-action btn-edit">Editar</a>
-                    <a href="{% url 'excluir' despesa.id %}" class="btn-action btn-del">Excluir</a>
-                </div>
-            </div>
-        {% empty %}
-            <p style="text-align: center; color: #7f8c8d;">Nenhuma conta este mês.</p>
-        {% endfor %}
+    <div class="container">
+        <div class="header-actions">
+            <h1>O Meu Histórico de Despesas</h1>
+            <a href="{% url 'adicionar' %}" class="btn-add">+ Nova Despesa</a>
+        </div>
 
-        <div class="paginacao">
+        <form method="GET" class="filtros-form">
+            <label for="mes">Mês:</label>
+            <input type="number" name="mes" value="{{ mes_selecionado }}" min="1" max="12" style="width: 60px;">
+            
+            <label for="ano">Ano:</label>
+            <input type="number" name="ano" value="{{ ano_selecionado }}" min="2000" style="width: 80px;">
+            
+            <button type="submit" class="btn-filtrar">Filtrar Histórico</button>
+        </form>
+
+        <div class="total-section">
+            Total Gasto no Mês: <span class="total-value">R$ {{ total_mes|default:"0.00" }}</span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Valor (R$)</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for despesa in despesas %}
+                <tr>
+                    <td>{{ despesa.data|date:"d/m/Y" }}</td>
+                    <td>{{ despesa.descricao }}</td>
+                    <td>{{ despesa.categoria.nome }}</td>
+                    <td>{{ despesa.forma_pagamento.nome }}</td>
+                    <td style="font-weight: bold; color: #ff6b6b;">{{ despesa.valor }}</td>
+                    <td class="action-links">
+                        <a href="{% url 'editar' despesa.id %}">Editar</a>
+                        <a href="{% url 'excluir' despesa.id %}" class="delete" onclick="return confirm('Tem a certeza que deseja excluir esta despesa?');">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 40px; font-size: 15px;">
+                        Nenhuma despesa encontrada para este período. O seu histórico está limpo!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
             {% if despesas.has_previous %}
-                <a href="?mes={{ mes_selecionado }}&page={{ despesas.previous_page_number }}" class="btn-page">Anterior</a>
+                <a href="?page=1&mes={{ mes_selecionado }}&ano={{ ano_selecionado }}">&laquo; Primeira</a>
+                <a href="?page={{ despesas.previous_page_number }}&mes={{ mes_selecionado }}&ano={{ ano_selecionado }}">Anterior</a>
             {% endif %}
-            <span style="font-size: 13px; margin: 0 10px;">{{ despesas.number }} / {{ despesas.paginator.num_pages }}</span>
+
+            <span class="current">Página {{ despesas.number }} de {{ despesas.paginator.num_pages }}</span>
+
             {% if despesas.has_next %}
-                <a href="?mes={{ mes_selecionado }}&page={{ despesas.next_page_number }}" class="btn-page">Próxima</a>
+                <a href="?page={{ despesas.next_page_number }}&mes={{ mes_selecionado }}&ano={{ ano_selecionado }}">Próxima</a>
+                <a href="?page={{ despesas.paginator.num_pages }}&mes={{ mes_selecionado }}&ano={{ ano_selecionado }}">Última &raquo;</a>
             {% endif %}
         </div>
     </div>

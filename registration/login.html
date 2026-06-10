@@ -2,37 +2,128 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar - Sistema de Despesas</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f7fb; color: #33475b; padding: 40px 20px; display: flex; justify-content: center; align-items: center; min-height: 80vh; margin: 0; }
-        .container { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
-        h1 { color: #5b9bd5; margin-top: 0; margin-bottom: 25px; text-align: center; font-size: 26px; }
-        label { font-weight: bold; font-size: 14px; display: block; margin-top: 15px; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border: 1px solid #d6e4f0; border-radius: 8px; box-sizing: border-box; background-color: #f8fbff; outline: none; font-size: 14px; }
-        input:focus { border-color: #8faadc; }
-        .btn-submit { background-color: #8faadc; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; margin-top: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.2s; }
-        .btn-submit:hover { background-color: #7a99cc; }
-        .footer-links { text-align: center; margin-top: 20px; font-size: 14px; }
-        .footer-links a { color: #5b9bd5; text-decoration: none; font-weight: bold; }
-        .errorlist { color: #ff6b6b; padding-left: 20px; font-size: 14px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7fb;
+            color: #33475b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #5b9bd5;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+            color: #4a607a;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d6e4f0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #f8fbff;
+            outline: none;
+            font-size: 14px;
+            color: #33475b;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            border-color: #8faadc;
+            box-shadow: 0 0 0 3px rgba(143, 170, 220, 0.2);
+        }
+        .btn-submit {
+            background-color: #8faadc;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #7a99cc;
+        }
+        .error-message {
+            background-color: #ffeef0;
+            color: #ff6b6b;
+            border: 1px solid #ffd1d6;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .footer-links a {
+            color: #5b9bd5;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover {
+            color: #4a82b8;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="login-container">
         <h1>Acessar Sistema</h1>
         
         {% if form.errors %}
-            <p style="color: #ff6b6b; text-align: center; font-weight: bold;">Usuário ou senha incorretos.</p>
+            <div class="error-message">
+                Usuário ou senha incorretos. Por favor, tente novamente.
+            </div>
         {% endif %}
 
         <form method="POST">
             {% csrf_token %}
             
-            <label for="id_username">Usuário:</label>
-            <input type="text" name="username" autofocus required id="id_username" placeholder="Digite seu usuário">
+            <div class="form-group">
+                <label for="id_username">Usuário</label>
+                <input type="text" name="username" autofocus required id="id_username" placeholder="Digite seu usuário">
+            </div>
             
-            <label for="id_password">Senha:</label>
-            <input type="password" name="password" required id="id_password" placeholder="Digite sua senha">
+            <div class="form-group">
+                <label for="id_password">Senha</label>
+                <input type="password" name="password" required id="id_password" placeholder="Digite sua senha">
+            </div>
             
             <button type="submit" class="btn-submit">Entrar</button>
         </form>

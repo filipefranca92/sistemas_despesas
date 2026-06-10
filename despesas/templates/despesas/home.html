@@ -1,23 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Página Principal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início - Sistema de Despesas</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f7fb; color: #33475b; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 400px; }
-        h1 { color: #5b9bd5; margin-bottom: 30px; }
-        .btn { display: block; width: 100%; background-color: #8faadc; color: white; padding: 15px; border-radius: 8px; text-decoration: none; font-size: 16px; margin-bottom: 15px; transition: background 0.3s; box-sizing: border-box; }
-        .btn:hover { background-color: #6b8cce; }
-        .btn-outline { background-color: transparent; border: 2px solid #8faadc; color: #8faadc; }
-        .btn-outline:hover { background-color: #8faadc; color: white; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7fb;
+            color: #33475b;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #33475b;
+            font-weight: bold;
+            font-size: 15px;
+            margin-right: 20px;
+            transition: color 0.2s;
+        }
+        nav a:hover {
+            color: #5b9bd5;
+        }
+        .nav-logo {
+            color: #5b9bd5;
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 0;
+        }
+        .btn-register {
+            text-decoration: none;
+            color: white !important;
+            background-color: #8faadc;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            transition: background-color 0.2s;
+        }
+        .btn-register:hover {
+            background-color: #7a99cc;
+        }
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            font-family: inherit;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        .btn-logout:hover {
+            color: #e05252;
+        }
+        .hero-container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #5b9bd5;
+            font-size: 32px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #4a607a;
+            margin-bottom: 35px;
+        }
+        .cta-buttons a {
+            text-decoration: none;
+            display: inline-block;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-primary {
+            background-color: #8faadc;
+            color: white !important;
+        }
+        .btn-primary:hover {
+            background-color: #7a99cc;
+        }
+        .btn-secondary {
+            background-color: #e2ebf5;
+            color: #4a607a !important;
+        }
+        .btn-secondary:hover {
+            background-color: #d1dfef;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Meu Financeiro</h1>
-        <p>O que você deseja fazer hoje?</p>
-        <a href="{% url 'adicionar' %}" class="btn">Nova Despesa</a>
-        <a href="{% url 'listar' %}" class="btn btn-outline">Ver Histórico</a>
+
+    <nav>
+        <div>
+            <a href="{% url 'home' %}" class="nav-logo">Sistema de Despesas</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'listar' %}" style="margin-left: 25px;">Meu Histórico</a>
+            {% endif %}
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                <span style="margin-right: 20px; color: #7f8c8d; font-size: 15px;">Olá, <strong>{{ user.username }}</strong>!</span>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">Sair</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Entrar</a>
+                <a href="{% url 'registrar' %}" class="btn-register">Criar Conta</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="hero-container">
+        <h1>Controle Financeiro Inteligente</h1>
+        <p>
+            Bem-vindo ao Sistema de Gestão de Despesas. Uma plataforma desenvolvida para simplificar 
+            o monitoramento dos seus gastos diários, categorização de despesas e controle de receitas. 
+            Garantia de privacidade total, com isolamento seguro de dados por utilizador e alta performance.
+        </p>
+        
+        <div class="cta-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'listar' %}" class="btn-primary">Aceder ao Meu Painel</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-primary">Entrar no Sistema</a>
+                <a href="{% url 'registrar' %}" class="btn-secondary">Cadastrar Nova Conta</a>
+            {% endif %}
+        </div>
     </div>
+
 </body>
 </html>

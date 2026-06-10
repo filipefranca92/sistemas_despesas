@@ -20,7 +20,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 
 # =====================================================================
-# VIEWS DE AUTENTICAÇÃO (Login / Cadastro)
+# VIEWS DE AUTENTICAÇÃO (Login / Registo)
 # =====================================================================
 
 def registrar(request):
@@ -28,7 +28,7 @@ def registrar(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user) # Faz o login automático do novo usuário após cadastrar
+            login(request, user) # Faz o login automático do novo utilizador após o registo
             return redirect('listar')
     else:
         form = UserCreationForm()
@@ -39,7 +39,7 @@ def registrar(request):
 # =====================================================================
 
 def home(request):
-    # Redirecionamento automático removido para permitir a navegação livre para a Home
+    # Página inicial aberta (qualquer pessoa acede, o menu muda se estiver autenticado)
     return render(request, 'despesas/home.html')
 
 @login_required
@@ -47,6 +47,7 @@ def listar_despesas(request):
     mes_atual = request.GET.get('mes', datetime.now().month)
     ano_atual = request.GET.get('ano', datetime.now().year)
     
+    # Busca apenas os registos do utilizador logado no momento
     usuario_atual = request.user
 
     query_base = Despesa.objects.filter(
@@ -76,7 +77,7 @@ def adicionar_despesa(request):
                 descricao=request.POST.get('descricao'),
                 categoria_id=request.POST.get('categoria'),
                 forma_pagamento_id=request.POST.get('forma_pagamento'),
-                usuario=request.user # Vincula automaticamente ao usuário logado
+                usuario=request.user # Vincula automaticamente ao utilizador logado
             )
         return redirect('listar')
     
@@ -89,7 +90,7 @@ def adicionar_despesa(request):
 @login_required
 @transaction.atomic
 def editar_despesa(request, id):
-    # Garante que o usuário só consiga editar despesas que pertencem a ele
+    # Garante que o utilizador só consegue editar despesas que lhe pertencem
     despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
     
     if request.method == 'POST':
