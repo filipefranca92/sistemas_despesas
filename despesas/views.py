@@ -39,8 +39,7 @@ def registrar(request):
 # =====================================================================
 
 def home(request):
-    if request.user.is_authenticated:
-        return redirect('listar')
+    # Redirecionamento automático removido para permitir a navegação livre para a Home
     return render(request, 'despesas/home.html')
 
 @login_required
