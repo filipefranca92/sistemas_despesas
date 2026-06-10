@@ -11,6 +11,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
+# API REST E CACHE
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .serializers import CategoriaSerializer, FormaDePagamentoSerializer, DespesaSerializer, RendaSerializer
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+
 # =====================================================================
 # VIEWS DE AUTENTICAÇÃO (Login / Cadastro)
 # =====================================================================
@@ -40,7 +48,6 @@ def listar_despesas(request):
     mes_atual = request.GET.get('mes', datetime.now().month)
     ano_atual = request.GET.get('ano', datetime.now().year)
     
-    # SEGURANÇA TOTAL: Busca apenas os registros do usuário que está logado no momento!
     usuario_atual = request.user
 
     query_base = Despesa.objects.filter(
@@ -107,3 +114,42 @@ def excluir_despesa(request, id):
     despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
     despesa.delete()
     return redirect('listar')
+
+# =====================================================================
+# API VIEWSETS (REST)
+# =====================================================================
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    permission_classes = [IsAuthenticated]
+
+class FormaDePagamentoViewSet(viewsets.ModelViewSet):
+    queryset = FormaDePagamento.objects.all()
+    serializer_class = FormaDePagamentoSerializer
+    permission_classes = [IsAuthenticated]
+
+class DespesaViewSet(viewsets.ModelViewSet):
+    serializer_class = DespesaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Despesa.objects.filter(usuario=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+    @method_decorator(cache_page(60 * 5))
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+class RendaViewSet(viewsets.ModelViewSet):
+    serializer_class = RendaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Renda.objects.filter(usuario=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
