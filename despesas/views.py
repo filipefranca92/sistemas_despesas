@@ -6,27 +6,42 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from datetime import datetime
 
-# API REST Imports
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .serializers import CategoriaSerializer, FormaDePagamentoSerializer, DespesaSerializer, RendaSerializer
-
-# Cache Imports
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
+# IMPORTS DE AUTENTICAÇÃO
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 # =====================================================================
-# VIEWS DO FRONTEND (Site HTML)
+# VIEWS DE AUTENTICAÇÃO (Login / Cadastro)
+# =====================================================================
+
+def registrar(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user) # Faz o login automático do novo usuário após cadastrar
+            return redirect('listar')
+    else:
+        form = UserCreationForm()
+    return render(request, 'despesas/registrar.html', {'form': form})
+
+# =====================================================================
+# VIEWS DO FRONTEND (Protegidas com @login_required)
 # =====================================================================
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('listar')
     return render(request, 'despesas/home.html')
 
+@login_required
 def listar_despesas(request):
     mes_atual = request.GET.get('mes', datetime.now().month)
     ano_atual = request.GET.get('ano', datetime.now().year)
-    usuario_atual = request.user if request.user.is_authenticated else User.objects.first()
+    
+    # SEGURANÇA TOTAL: Busca apenas os registros do usuário que está logado no momento!
+    usuario_atual = request.user
 
     query_base = Despesa.objects.filter(
         usuario=usuario_atual,
@@ -46,15 +61,16 @@ def listar_despesas(request):
     }
     return render(request, 'despesas/listar.html', context)
 
+@login_required
 def adicionar_despesa(request):
     if request.method == 'POST':
-        with transaction.atomic(): # Garantia de Rollback
+        with transaction.atomic():
             Despesa.objects.create(
                 valor=request.POST.get('valor'),
                 descricao=request.POST.get('descricao'),
                 categoria_id=request.POST.get('categoria'),
                 forma_pagamento_id=request.POST.get('forma_pagamento'),
-                usuario=request.user
+                usuario=request.user # Vincula automaticamente ao usuário logado
             )
         return redirect('listar')
     
@@ -64,9 +80,12 @@ def adicionar_despesa(request):
     }
     return render(request, 'despesas/adicionar.html', context)
 
-@transaction.atomic # Garantia de Rollback
+@login_required
+@transaction.atomic
 def editar_despesa(request, id):
-    despesa = get_object_or_404(Despesa, id=id)
+    # Garante que o usuário só consiga editar despesas que pertencem a ele
+    despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
+    
     if request.method == 'POST':
         despesa.valor = request.POST.get('valor')
         despesa.descricao = request.POST.get('descricao')
@@ -82,47 +101,9 @@ def editar_despesa(request, id):
     }
     return render(request, 'despesas/editar.html', context)
 
-@transaction.atomic # Garantia de Rollback
+@login_required
+@transaction.atomic
 def excluir_despesa(request, id):
-    despesa = get_object_or_404(Despesa, id=id)
+    despesa = get_object_or_404(Despesa, id=id, usuario=request.user)
     despesa.delete()
     return redirect('listar')
-
-# =====================================================================
-# API VIEWSETS (REST)
-# =====================================================================
-
-class CategoriaViewSet(viewsets.ModelViewSet):
-    queryset = Categoria.objects.all()
-    serializer_class = CategoriaSerializer
-    permission_classes = [IsAuthenticated]
-
-class FormaDePagamentoViewSet(viewsets.ModelViewSet):
-    queryset = FormaDePagamento.objects.all()
-    serializer_class = FormaDePagamentoSerializer
-    permission_classes = [IsAuthenticated]
-
-class DespesaViewSet(viewsets.ModelViewSet):
-    serializer_class = DespesaSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Despesa.objects.filter(usuario=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)
-
-    @method_decorator(cache_page(60 * 5))
-    @method_decorator(vary_on_cookie)
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-class RendaViewSet(viewsets.ModelViewSet):
-    serializer_class = RendaSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Renda.objects.filter(usuario=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)

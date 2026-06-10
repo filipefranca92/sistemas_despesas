@@ -3,16 +3,17 @@ Django settings for projeto_despesas project.
 """
 import os
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Em produção no Heroku, configure uma variável de ambiente 'DJANGO_SECRET_KEY'
+# Em produção no Heroku/Render, configure uma variável de ambiente 'DJANGO_SECRET_KEY'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-(z^%l1uqtjkr8xdx)1ajt)$+n#zv3zy*6jr@o+ikb4@8$lz)0n')
 
-# Segurança: DEBUG fica False em produção automaticamente se definirmos a variável no Heroku
+# Segurança: DEBUG fica False em produção automaticamente se definirmos a variável
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-# Permite conexões locais e do subdomínio do Heroku
+# Permite conexões locais e do subdomínio do Render
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
 
 INSTALLED_APPS = [
@@ -28,7 +29,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # <-- ADICIONADO: Essencial para o CSS funcionar no Heroku
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Essencial para o CSS funcionar na nuvem
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,18 +58,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'projeto_despesas.wsgi.application'
 
-
 # =====================================================================
 # CONFIGURAÇÃO DE BANCO DE DADOS (Híbrida: Local vs Nuvem)
 # =====================================================================
-# Tentamos ler as variáveis de ambiente que o Heroku gera automaticamente 
-# quando adicionamos um Add-on de banco de dados (como JawsDB ou ClearDB).
-import dj_database_url
-
+# Variável segura que lê a URL da nuvem sem expor a palavra-passe no código
 DATABASE_URL = os.environ.get('JAWSDB_URL') or os.environ.get('CLEARDB_DATABASE_URL') or os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
-    # Se estiver no Heroku, configura o banco da nuvem dinamicamente
+    # Se estiver no Render, configura o banco da nuvem dinamicamente
     DATABASES = {
         'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }
@@ -85,13 +82,11 @@ else:
         }
     }
 
-
-# Localização e Idioma ajustados para o Brasil
+# Localização e Idioma ajustados
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
-
 
 # =====================================================================
 # CONFIGURAÇÃO DE ARQUIVOS ESTÁTICOS (WhiteNoise)
@@ -99,7 +94,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 
 # =====================================================================
 # CONFIGURAÇÃO DE CACHE (Performance da API)
@@ -111,9 +105,8 @@ CACHES = {
     }
 }
 
-
 # =====================================================================
-# LOGGING (Mecanismo de Resiliência e Registro de Erros)
+# LOGGING (Mecanismo de Resiliência e Registo de Erros)
 # =====================================================================
 LOGGING = {
     'version': 1,
@@ -133,3 +126,10 @@ LOGGING = {
         },
     },
 }
+
+# =====================================================================
+# CONFIGURAÇÕES DO FLUXO DE AUTENTICAÇÃO
+# =====================================================================
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'listar'
+LOGOUT_REDIRECT_URL = 'login'
