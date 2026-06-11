@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -24,6 +25,11 @@
             max-width: 400px;
             box-sizing: border-box;
             text-align: center;
+        }
+        .login-logo {
+            max-width: 110px;
+            height: auto;
+            margin-bottom: 15px;
         }
         h2 {
             color: #5b9bd5;
@@ -98,6 +104,8 @@
 <body>
 
     <div class="login-box">
+        <img src="{% static 'despesas/logo.png' %}" alt="Logo Sistema" class="login-logo">
+        
         <h2>Acesso ao Sistema</h2>
         
         {% if form.errors %}
@@ -126,4 +134,3 @@
     </div>
 
 </body>
-</html>
