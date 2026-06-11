@@ -245,7 +245,7 @@
                     <td>{{ despesa.forma_pagamento.nome }}</td>
                     <td style="font-weight: bold; color: #ff6b6b;">{{ despesa.valor }}</td>
                     <td class="action-links">
-                        <a href="{% url 'edited' despesa.id %}">Editar</a>
+                        <a href="{% url 'editar' despesa.id %}">Editar</a>
                         <a href="{% url 'excluir' despesa.id %}" class="delete" onclick="return confirm('Tem a certeza que deseja excluir esta despesa?');">Excluir</a>
                     </td>
                 </tr>
