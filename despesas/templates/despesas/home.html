@@ -35,7 +35,6 @@
             color: #5b9bd5;
             font-size: 18px;
             font-weight: bold;
-            margin-right: 0;
         }
         .btn-register {
             text-decoration: none;
@@ -80,12 +79,6 @@
             margin-top: 0;
             margin-bottom: 20px;
         }
-        p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #4a607a;
-            margin-bottom: 35px;
-        }
         .cta-buttons a {
             text-decoration: none;
             display: inline-block;
@@ -116,9 +109,9 @@
 
     <nav>
         <div>
-            <a href="{% url 'home' %}" class="nav-logo">Sistema de Despesas</a>
+            <span class="nav-logo" style="margin-right: 25px;">Sistema de Despesas</span>
             {% if user.is_authenticated %}
-                <a href="{% url 'listar' %}" style="margin-left: 25px;">Meu Histórico</a>
+                <a href="{% url 'listar' %}">Meu Histórico</a>
             {% endif %}
         </div>
         <div>
@@ -137,15 +130,10 @@
 
     <div class="hero-container">
         <h1>Controle Financeiro Inteligente</h1>
-        <p>
-            Bem-vindo ao Sistema de Gestão de Despesas. Uma plataforma desenvolvida para simplificar 
-            o monitoramento dos seus gastos diários, categorização de despesas e controle de receitas. 
-            Garantia de privacidade total, com isolamento seguro de dados por utilizador e alta performance.
-        </p>
         
-        <div class="cta-buttons">
+        <div class="cta-buttons" style="margin-top: 40px;">
             {% if user.is_authenticated %}
-                <a href="{% url 'listar' %}" class="btn-primary">Aceder ao Meu Painel</a>
+                <a href="{% url 'adicionar' %}" class="btn-primary">Nova Despesa</a>
             {% else %}
                 <a href="{% url 'login' %}" class="btn-primary">Entrar no Sistema</a>
                 <a href="{% url 'registrar' %}" class="btn-secondary">Cadastrar Nova Conta</a>

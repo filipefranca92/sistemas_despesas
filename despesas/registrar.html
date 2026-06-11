@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Conta - Sistema de Despesas</title>
+    <title>Cadastro - Sistema de Despesas</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,7 +15,7 @@
             min-height: 100vh;
             margin: 0;
         }
-        .register-container {
+        .register-box {
             background-color: #ffffff;
             padding: 40px;
             border-radius: 12px;
@@ -23,28 +23,30 @@
             width: 100%;
             max-width: 450px;
             box-sizing: border-box;
+            text-align: center;
         }
-        h1 {
+        h2 {
             color: #5b9bd5;
             margin-top: 0;
             margin-bottom: 25px;
-            text-align: center;
-            font-size: 26px;
-            font-weight: 600;
+            font-size: 24px;
         }
         p {
-            margin-bottom: 20px;
+            text-align: left;
+            margin-bottom: 15px;
         }
         label {
+            display: block;
             font-weight: bold;
             font-size: 14px;
-            display: block;
             margin-bottom: 8px;
             color: #4a607a;
         }
-        input {
+        /* Estiliza os inputs gerados automaticamente pelo Django */
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px;
             border: 1px solid #d6e4f0;
             border-radius: 8px;
             box-sizing: border-box;
@@ -52,19 +54,18 @@
             outline: none;
             font-size: 14px;
             color: #33475b;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-bottom: 5px;
         }
         input:focus {
             border-color: #8faadc;
-            box-shadow: 0 0 0 3px rgba(143, 170, 220, 0.2);
         }
         .helptext {
             display: block;
             font-size: 11px;
             color: #7f8c8d;
-            margin-top: 5px;
             margin-bottom: 15px;
             line-height: 1.4;
+            text-align: left;
         }
         .btn-submit {
             background-color: #8faadc;
@@ -82,51 +83,48 @@
         .btn-submit:hover {
             background-color: #7a99cc;
         }
+        /* Lista de erros do formulário */
         .errorlist {
             color: #ff6b6b;
             padding-left: 20px;
             font-size: 13px;
             margin-bottom: 15px;
+            text-align: left;
             font-weight: 500;
         }
-        .footer-links {
-            text-align: center;
+        .login-link {
+            display: block;
             margin-top: 25px;
             font-size: 14px;
             color: #7f8c8d;
         }
-        .footer-links a {
+        .login-link a {
             color: #5b9bd5;
             text-decoration: none;
             font-weight: bold;
-            transition: color 0.2s;
         }
-        .footer-links a:hover {
-            color: #4a82b8;
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h1>Criar Nova Conta</h1>
+
+    <div class="register-box">
+        <h2>Criar Novo Usuário</h2>
         
         <form method="POST">
             {% csrf_token %}
             
-            {% if form.errors %}
-                <p style="color: #ff6b6b; font-weight: bold; text-align: center; font-size: 14px;">
-                    Por favor, corrija os erros abaixo.
-                </p>
-            {% endif %}
-
             {{ form.as_p }}
             
             <button type="submit" class="btn-submit">Confirmar Cadastro</button>
         </form>
 
-        <div class="footer-links">
-            Já tem uma conta? <a href="{% url 'login' %}">Faça Login</a>
+        <div class="login-link">
+            Já possui uma conta? <a href="{% url 'login' %}">Voltar para o Login</a>
         </div>
     </div>
+
 </body>
 </html>

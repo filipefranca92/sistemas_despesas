@@ -12,7 +12,6 @@
             margin: 0;
             padding: 0;
         }
-        /* Barra de Navegação */
         nav {
             background-color: #ffffff;
             padding: 15px 30px;
@@ -36,7 +35,6 @@
             color: #5b9bd5;
             font-size: 18px;
             font-weight: bold;
-            margin-right: 0;
         }
         .btn-logout {
             background: none;
@@ -52,8 +50,6 @@
         .btn-logout:hover {
             color: #e05252;
         }
-        
-        /* Conteúdo Principal */
         .container {
             max-width: 1000px;
             margin: 40px auto;
@@ -86,8 +82,6 @@
         .btn-add:hover {
             background-color: #7a99cc;
         }
-        
-        /* Filtros e Total */
         .filtros-form {
             display: flex;
             gap: 15px;
@@ -136,8 +130,6 @@
             font-size: 24px;
             margin-left: 10px;
         }
-        
-        /* Tabela */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -171,8 +163,6 @@
         .action-links a:hover {
             text-decoration: underline;
         }
-        
-        /* Paginação */
         .pagination {
             display: flex;
             justify-content: center;
@@ -200,10 +190,11 @@
     </style>
 </head>
 <body>
+
     <nav>
         <div>
-            <a href="{% url 'home' %}" class="nav-logo">Sistema de Despesas</a>
-            <a href="{% url 'listar' %}" style="margin-left: 25px; color: #5b9bd5;">Meu Histórico</a>
+            <span class="nav-logo" style="margin-right: 25px;">Sistema de Despesas</span>
+            <a href="{% url 'listar' %}" style="color: #5b9bd5;">Meu Histórico</a>
         </div>
         <div>
             <span style="margin-right: 20px; color: #7f8c8d; font-size: 15px;">Olá, <strong>{{ user.username }}</strong>!</span>
@@ -254,7 +245,7 @@
                     <td>{{ despesa.forma_pagamento.nome }}</td>
                     <td style="font-weight: bold; color: #ff6b6b;">{{ despesa.valor }}</td>
                     <td class="action-links">
-                        <a href="{% url 'editar' despesa.id %}">Editar</a>
+                        <a href="{% url 'edited' despesa.id %}">Editar</a>
                         <a href="{% url 'excluir' despesa.id %}" class="delete" onclick="return confirm('Tem a certeza que deseja excluir esta despesa?');">Excluir</a>
                     </td>
                 </tr>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrar - Sistema de Despesas</title>
+    <title>Login - Sistema de Despesas</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,7 +15,7 @@
             min-height: 100vh;
             margin: 0;
         }
-        .login-container {
+        .login-box {
             background-color: #ffffff;
             padding: 40px;
             border-radius: 12px;
@@ -23,28 +23,29 @@
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
+            text-align: center;
         }
-        h1 {
+        h2 {
             color: #5b9bd5;
             margin-top: 0;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 26px;
-            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 24px;
         }
-        .form-group {
+        .input-group {
+            text-align: left;
             margin-bottom: 20px;
         }
         label {
+            display: block;
             font-weight: bold;
             font-size: 14px;
-            display: block;
             margin-bottom: 8px;
             color: #4a607a;
         }
-        input {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px;
             border: 1px solid #d6e4f0;
             border-radius: 8px;
             box-sizing: border-box;
@@ -52,11 +53,9 @@
             outline: none;
             font-size: 14px;
             color: #33475b;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
         input:focus {
             border-color: #8faadc;
-            box-shadow: 0 0 0 3px rgba(143, 170, 220, 0.2);
         }
         .btn-submit {
             background-color: #8faadc;
@@ -74,63 +73,57 @@
         .btn-submit:hover {
             background-color: #7a99cc;
         }
-        .error-message {
-            background-color: #ffeef0;
+        .error-msg {
             color: #ff6b6b;
-            border: 1px solid #ffd1d6;
-            padding: 12px;
-            border-radius: 8px;
             font-size: 14px;
+            font-weight: bold;
             margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
         }
-        .footer-links {
-            text-align: center;
+        .register-link {
+            display: block;
             margin-top: 25px;
             font-size: 14px;
             color: #7f8c8d;
         }
-        .footer-links a {
+        .register-link a {
             color: #5b9bd5;
             text-decoration: none;
             font-weight: bold;
-            transition: color 0.2s;
         }
-        .footer-links a:hover {
-            color: #4a82b8;
+        .register-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Acessar Sistema</h1>
+
+    <div class="login-box">
+        <h2>Acesso ao Sistema</h2>
         
         {% if form.errors %}
-            <div class="error-message">
-                Usuário ou senha incorretos. Por favor, tente novamente.
-            </div>
+            <div class="error-msg">Usuário ou senha incorretos. Tente novamente.</div>
         {% endif %}
 
         <form method="POST">
             {% csrf_token %}
             
-            <div class="form-group">
+            <div class="input-group">
                 <label for="id_username">Usuário</label>
-                <input type="text" name="username" autofocus required id="id_username" placeholder="Digite seu usuário">
+                <input type="text" name="username" id="id_username" required autofocus>
             </div>
             
-            <div class="form-group">
+            <div class="input-group">
                 <label for="id_password">Senha</label>
-                <input type="password" name="password" required id="id_password" placeholder="Digite sua senha">
+                <input type="password" name="password" id="id_password" required>
             </div>
             
             <button type="submit" class="btn-submit">Entrar</button>
         </form>
 
-        <div class="footer-links">
-            Não tem uma conta? <a href="{% url 'registrar' %}">Cadastre-se</a>
+        <div class="register-link">
+            Não possui uma conta? <a href="{% url 'registrar' %}">Cadastrar usuário</a>
         </div>
     </div>
+
 </body>
 </html>

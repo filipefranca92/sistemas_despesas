@@ -29,7 +29,7 @@ def registrar(request):
         if form.is_valid():
             user = form.save()
             login(request, user) # Faz o login automático do novo utilizador após o registo
-            return redirect('listar')
+            return redirect('home') # Alterado para redirecionar para a Home (o centro da APP)
     else:
         form = UserCreationForm()
     return render(request, 'despesas/registrar.html', {'form': form})
@@ -38,8 +38,9 @@ def registrar(request):
 # VIEWS DO FRONTEND (Protegidas com @login_required)
 # =====================================================================
 
+@login_required # <-- ADICIONADO: Força a regra LINK > LOGIN > APP
 def home(request):
-    # Página inicial aberta (qualquer pessoa acede, o menu muda se estiver autenticado)
+    # Agora a página inicial está bloqueada. Ninguém acede sem fazer Login.
     return render(request, 'despesas/home.html')
 
 @login_required
