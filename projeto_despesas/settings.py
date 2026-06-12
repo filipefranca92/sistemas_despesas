@@ -61,7 +61,6 @@ WSGI_APPLICATION = 'projeto_despesas.wsgi.application'
 # =====================================================================
 # CONFIGURAÇÃO DE BANCO DE DADOS (Híbrida: Local vs Nuvem)
 # =====================================================================
-# Variável segura que lê a URL da nuvem sem expor a palavra-passe no código
 DATABASE_URL = os.environ.get('JAWSDB_URL') or os.environ.get('CLEARDB_DATABASE_URL') or os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
@@ -89,11 +88,19 @@ USE_I18N = True
 USE_TZ = True
 
 # =====================================================================
-# CONFIGURAÇÃO DE ARQUIVOS ESTÁTICOS (WhiteNoise)
+# CONFIGURAÇÃO DE ARQUIVOS ESTÁTICOS (WhiteNoise - Padrão Django 6+)
 # =====================================================================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # =====================================================================
 # CONFIGURAÇÃO DE CACHE (Performance da API)
@@ -106,21 +113,20 @@ CACHES = {
 }
 
 # =====================================================================
-# LOGGING (Mecanismo de Resiliência e Registo de Erros)
+# LOGGING (Ajustado para o Render - Saída via Consola/Stream)
 # =====================================================================
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'console': {
             'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': 'django_errors.log',
+            'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': True,
         },
